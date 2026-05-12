@@ -1,0 +1,297 @@
+name: SRv6-lab
+
+topology:
+  defaults:
+    sysctls:
+      net.ipv6.conf.all.forwarding: 1
+
+  nodes:
+
+    # =========================
+    # Ingress
+    # =========================
+    ingress:
+      kind: linux
+      image: quay.io/frrouting/frr:10.6.0
+      sysctls:
+        net.ipv6.conf.all.seg6_enabled: 1
+        net.ipv6.conf.default.seg6_enabled: 1
+        net.ipv6.conf.all.seg6_require_hmac: 0
+        net.ipv6.conf.lo.seg6_enabled: 1
+      binds:
+        - ../configs/ingress.conf:/etc/frr/frr.conf
+        - ../configs/daemons:/etc/frr/daemons
+        - ../bash/ingress-policy.sh:/bash/ingress-policy.sh
+      exec:
+        - bash /bash/ingress-policy.sh
+
+    # =========================
+    # Spine Routers
+    # =========================
+    R2:
+      kind: linux
+      image: quay.io/frrouting/frr:10.6.0
+      cpu: 0.5
+      memory: 256Mi
+      sysctls:
+        net.ipv6.conf.all.seg6_enabled: 1
+        net.ipv6.conf.default.seg6_enabled: 1
+        net.ipv6.conf.all.seg6_require_hmac: 0
+        net.ipv6.conf.lo.seg6_enabled: 1
+      binds:
+        - ../configs/R2.conf:/etc/frr/frr.conf
+        - ../configs/daemons:/etc/frr/daemons
+
+    R3:
+      kind: linux
+      image: quay.io/frrouting/frr:10.6.0
+      cpu: 0.5
+      memory: 256Mi
+      sysctls:
+        net.ipv6.conf.all.seg6_enabled: 1
+        net.ipv6.conf.default.seg6_enabled: 1
+        net.ipv6.conf.all.seg6_require_hmac: 0
+        net.ipv6.conf.lo.seg6_enabled: 1
+      binds:
+        - ../configs/R3.conf:/etc/frr/frr.conf
+        - ../configs/daemons:/etc/frr/daemons
+        - ../bash/R3-SRv6.sh:/bash/R3-SRv6.sh
+      exec:
+        - bash /bash/R3-SRv6.sh
+
+    R7:
+      kind: linux
+      image: quay.io/frrouting/frr:10.6.0
+      cpu: 0.5
+      memory: 256Mi
+      sysctls:
+        net.ipv6.conf.all.seg6_enabled: 1
+        net.ipv6.conf.default.seg6_enabled: 1
+        net.ipv6.conf.all.seg6_require_hmac: 0
+        net.ipv6.conf.lo.seg6_enabled: 1
+      binds:
+        - ../configs/R7.conf:/etc/frr/frr.conf
+        - ../configs/daemons:/etc/frr/daemons
+
+    # =========================
+    # Leaf Routers
+    # =========================
+    R1:
+      kind: linux
+      image: quay.io/frrouting/frr:10.6.0
+      sysctls:
+        net.ipv6.conf.all.seg6_enabled: 1
+        net.ipv6.conf.default.seg6_enabled: 1
+        net.ipv6.conf.all.seg6_require_hmac: 0
+        net.ipv6.conf.lo.seg6_enabled: 1
+      binds:
+        - ../configs/R1.conf:/etc/frr/frr.conf
+        - ../configs/daemons:/etc/frr/daemons
+
+    R4:
+      kind: linux
+      image: quay.io/frrouting/frr:10.6.0
+      sysctls:
+        net.ipv6.conf.all.seg6_enabled: 1
+        net.ipv6.conf.default.seg6_enabled: 1
+        net.ipv6.conf.all.seg6_require_hmac: 0
+        net.ipv6.conf.lo.seg6_enabled: 1
+      binds:
+        - ../configs/R4.conf:/etc/frr/frr.conf
+        - ../configs/daemons:/etc/frr/daemons
+
+    R5:
+      kind: linux
+      image: quay.io/frrouting/frr:10.6.0
+      sysctls:
+        net.ipv6.conf.all.seg6_enabled: 1
+        net.ipv6.conf.default.seg6_enabled: 1
+        net.ipv6.conf.all.seg6_require_hmac: 0
+        net.ipv6.conf.lo.seg6_enabled: 1
+      binds:
+        - ../configs/R5.conf:/etc/frr/frr.conf
+        - ../configs/daemons:/etc/frr/daemons
+
+    R6:
+      kind: linux
+      image: quay.io/frrouting/frr:10.6.0
+      sysctls:
+        net.ipv6.conf.all.seg6_enabled: 1
+        net.ipv6.conf.default.seg6_enabled: 1
+        net.ipv6.conf.all.seg6_require_hmac: 0
+        net.ipv6.conf.lo.seg6_enabled: 1
+      binds:
+        - ../configs/R6.conf:/etc/frr/frr.conf
+        - ../configs/daemons:/etc/frr/daemons
+
+    R8:
+      kind: linux
+      image: quay.io/frrouting/frr:10.6.0
+      sysctls:
+        net.ipv6.conf.all.seg6_enabled: 1
+        net.ipv6.conf.default.seg6_enabled: 1
+        net.ipv6.conf.all.seg6_require_hmac: 0
+        net.ipv6.conf.lo.seg6_enabled: 1
+      binds:
+        - ../configs/R8.conf:/etc/frr/frr.conf
+        - ../configs/daemons:/etc/frr/daemons
+        - ../bash/R8-SRv6.sh:/bash/R8-SRv6.sh
+      exec:
+        - bash /bash/R8-SRv6.sh
+
+    R9:
+      kind: linux
+      image: quay.io/frrouting/frr:10.6.0
+      sysctls:
+        net.ipv6.conf.all.seg6_enabled: 1
+        net.ipv6.conf.default.seg6_enabled: 1
+        net.ipv6.conf.all.seg6_require_hmac: 0
+        net.ipv6.conf.lo.seg6_enabled: 1
+      binds:
+        - ../configs/R9.conf:/etc/frr/frr.conf
+        - ../configs/daemons:/etc/frr/daemons
+
+    # =========================
+    # Egress
+    # =========================
+    egress:
+      kind: linux
+      image: quay.io/frrouting/frr:10.6.0
+      sysctls:
+        net.ipv6.conf.all.seg6_enabled: 1
+        net.ipv6.conf.default.seg6_enabled: 1
+        net.ipv6.conf.all.seg6_require_hmac: 0
+        net.ipv6.conf.lo.seg6_enabled: 1
+      binds:
+        - ../configs/egress.conf:/etc/frr/frr.conf
+        - ../configs/daemons:/etc/frr/daemons
+        - ../bash/egress-policy.sh:/bash/egress-policy.sh
+      exec:
+        - bash /bash/egress-policy.sh
+
+    # =========================
+    # End Hosts
+    # =========================
+    client1:
+      kind: linux
+      image: nicolaka/netshoot
+      exec:
+        - ip link set eth1 up
+        - ip -6 addr add fc00:1000:1101::10/64 dev eth1
+        - ip -6 route replace default via fc00:1000:1101::1 dev eth1
+
+    client2:
+      kind: linux
+      image: nicolaka/netshoot
+      exec:
+        - ip link set eth1 up
+        - ip -6 addr add fc00:1000:1101::20/64 dev eth1
+        - ip -6 route replace default via fc00:1000:1101::1 dev eth1
+
+    client3:
+      kind: linux
+      image: nicolaka/netshoot
+      exec:
+        - ip link set eth1 up
+        - ip -6 addr add fc00:1000:1101::30/64 dev eth1
+        - ip -6 route replace default via fc00:1000:1101::1 dev eth1
+
+    webserver:
+      kind: linux
+      image: nicolaka/netshoot
+      exec:
+        - ip link set eth1 up
+        - ip -6 addr add fc00:1000:1213::10/64 dev eth1
+        - ip -6 route replace default via fc00:1000:1213::1 dev eth1
+    
+    backup-server:
+      kind: linux
+      image: nicolaka/netshoot
+      exec:
+        - ip link set eth1 up
+        - ip -6 addr add fc00:1000:1213::20/64 dev eth1
+        - ip -6 route replace default via fc00:1000:1213::1 dev eth1
+
+    # =========================
+    # Switch (L2 bridge between clients and ingress)
+    # =========================
+    sw1:
+      kind: linux
+      image: alpine:latest
+      exec:
+        - ip link add name br0 type bridge
+        - ip link set eth1 master br0
+        - ip link set eth2 master br0
+        - ip link set eth3 master br0
+        - ip link set eth4 master br0
+        - ip link set br0 up
+        - ip link set eth1 up
+        - ip link set eth2 up
+        - ip link set eth3 up
+        - ip link set eth4 up
+    
+    sw2:
+      kind: linux
+      image: alpine:latest
+      exec:
+        - ip link add name br0 type bridge
+        - ip link set eth1 master br0
+        - ip link set eth2 master br0
+        - ip link set eth3 master br0
+        - ip link set br0 up
+        - ip link set eth1 up
+        - ip link set eth2 up
+        - ip link set eth3 up
+
+  # =========================
+  # Links
+  # =========================
+  links:
+
+    # Clients → Switch
+    - endpoints: ["client1:eth1", "sw1:eth1"]
+    - endpoints: ["client2:eth1", "sw1:eth2"]
+    - endpoints: ["client3:eth1", "sw1:eth3"]
+
+    # Switch → Ingress
+    - endpoints: ["sw1:eth4", "ingress:eth1"]
+
+    # Ingress → Leaf
+    - endpoints: ["ingress:eth2", "R1:eth1"]
+    - endpoints: ["ingress:eth3", "R4:eth1"]
+
+    # Leaf → Spine (Clos Fabric)
+    - endpoints: ["R1:eth2", "R2:eth1"]
+    - endpoints: ["R1:eth3", "R3:eth1"]
+    - endpoints: ["R1:eth4", "R7:eth1"]
+
+    - endpoints: ["R4:eth2", "R2:eth2"]
+    - endpoints: ["R4:eth3", "R3:eth2"]
+    - endpoints: ["R4:eth4", "R7:eth2"]
+
+    - endpoints: ["R5:eth1", "R2:eth3"]
+    - endpoints: ["R5:eth2", "R3:eth3"]
+    - endpoints: ["R5:eth3", "R7:eth3"]
+
+    - endpoints: ["R6:eth1", "R2:eth4"]
+    - endpoints: ["R6:eth2", "R3:eth4"]
+    - endpoints: ["R6:eth3", "R7:eth4"]
+
+    - endpoints: ["R8:eth1", "R2:eth5"]
+    - endpoints: ["R8:eth2", "R3:eth5"]
+    - endpoints: ["R8:eth3", "R7:eth5"]
+
+    - endpoints: ["R9:eth1", "R2:eth6"]
+    - endpoints: ["R9:eth2", "R3:eth6"]
+    - endpoints: ["R9:eth3", "R7:eth6"]
+
+    # Exit Path
+    - endpoints: ["R6:eth4", "egress:eth1"]
+    - endpoints: ["R8:eth4", "egress:eth2"]
+
+    # Egress → sw2
+    - endpoints: ["egress:eth3", "sw2:eth1"]
+  
+    # sw2 → webserver and backup_server
+    - endpoints: ["sw2:eth2", "webserver:eth1"]
+    - endpoints: ["sw2:eth3", "backup-server:eth1"]
